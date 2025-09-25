@@ -7,6 +7,7 @@ import {
   filterTasksBySearch,
   sortTasks,
   calculateTaskStats,
+  isEffectivelyEmpty,
 } from '../utils/utils';
 
 export class TodoModel {
@@ -33,7 +34,7 @@ export class TodoModel {
   }
 
   addTask(title: string, description?: string, priority: Task['priority'] = 'medium'): void {
-    if (!title.trim()) return;
+    if (!title || typeof title !== 'string' || isEffectivelyEmpty(title)) return;
 
     const newTask: Task = {
       id: generateId(),
@@ -50,6 +51,9 @@ export class TodoModel {
   }
 
   toggleTask(id: string): void {
+    const taskExists = this.tasks.some(task => task.id === id);
+    if (!taskExists) return;
+    
     this.tasks = this.tasks.map(task =>
       task.id === id ? { ...task, completed: !task.completed } : task
     );
@@ -58,9 +62,14 @@ export class TodoModel {
   }
 
   deleteTask(id: string): void {
+    const initialLength = this.tasks.length;
     this.tasks = this.tasks.filter(task => task.id !== id);
-    this.saveTasks();
-    this.notify();
+    
+    // Only notify if a task was actually deleted
+    if (this.tasks.length !== initialLength) {
+      this.saveTasks();
+      this.notify();
+    }
   }
 
   // Data filtering and processing

@@ -1,5 +1,13 @@
 import type { Task, TaskFilter, TaskStats } from '../types/types';
 
+// Comprehensive whitespace checking including Unicode whitespace
+export const isEffectivelyEmpty = (str: string): boolean => {
+  if (!str) return true;
+  // Remove all Unicode whitespace characters and check if anything remains
+  const withoutUnicodeWhitespace = str.replace(/[\u00A0\u1680\u2000-\u200B\u2028\u2029\u202F\u205F\u3000\uFEFF]/g, '');
+  return withoutUnicodeWhitespace.trim() === '';
+};
+
 // ID Generation
 export const generateId = (): string => Math.random().toString(36).substr(2, 9);
 
@@ -8,7 +16,19 @@ export const loadTasksFromStorage = (): Task[] => {
   const savedTasks = localStorage.getItem('todos');
   if (savedTasks) {
     try {
-      return JSON.parse(savedTasks);
+      const parsed = JSON.parse(savedTasks);
+      // Ensure we have a valid array of task objects
+      if (Array.isArray(parsed)) {
+        // Validate that each item is a valid task object
+        const validTasks = parsed.filter(item => 
+          item && 
+          typeof item === 'object' && 
+          typeof item.id === 'string' && 
+          typeof item.title === 'string'
+        );
+        return validTasks;
+      }
+      return [];
     } catch (error) {
       console.error('Error parsing saved tasks:', error);
       localStorage.removeItem('todos');
