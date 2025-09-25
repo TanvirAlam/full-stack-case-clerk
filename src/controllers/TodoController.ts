@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import type { TaskFilter } from '../types/types';
+import type { Task, TaskFilter } from '../types/types';
 import { TodoModel } from '../models/TodoModel';
 import { TASK_PRIORITIES, TASK_FILTERS } from '../utils/const';
 
@@ -13,11 +13,13 @@ export class TodoController {
   // Form state management
   createFormState() {
     const [title, setTitle] = useState('');
+    const [subtitle, setSubtitle] = useState('');
     const [description, setDescription] = useState('');
     const [priority, setPriority] = useState<'low' | 'medium' | 'high'>(TASK_PRIORITIES.MEDIUM);
 
     const resetForm = useCallback(() => {
       setTitle('');
+      setSubtitle('');
       setDescription('');
       setPriority(TASK_PRIORITIES.MEDIUM);
     }, []);
@@ -25,6 +27,8 @@ export class TodoController {
     return {
       title,
       setTitle,
+      subtitle,
+      setSubtitle,
       description,
       setDescription,
       priority,
@@ -67,13 +71,14 @@ export class TodoController {
   // Actions
   handleAddTask = (e: React.FormEvent, formData: {
     title: string;
+    subtitle: string;
     description: string;
     priority: 'low' | 'medium' | 'high';
     resetForm: () => void;
   }) => {
     e.preventDefault();
     const initialTaskCount = this.model.getTasks().length;
-    this.model.addTask(formData.title, formData.description, formData.priority);
+    this.model.addTask(formData.title, formData.subtitle, formData.description, formData.priority);
     
     // Only reset form if task was actually added
     if (this.model.getTasks().length > initialTaskCount) {
@@ -87,6 +92,10 @@ export class TodoController {
 
   handleDeleteTask = (id: string) => {
     this.model.deleteTask(id);
+  };
+
+  handleUpdateTask = (id: string, updates: Partial<Pick<Task, 'title' | 'subtitle' | 'description' | 'priority'>>) => {
+    this.model.updateTask(id, updates);
   };
 
   // Computed values
@@ -120,5 +129,6 @@ export const useTodoController = (model: TodoModel) => {
       controller.handleAddTask(e, formState),
     handleToggleTask: controller.handleToggleTask,
     handleDeleteTask: controller.handleDeleteTask,
+    handleUpdateTask: controller.handleUpdateTask,
   };
 };

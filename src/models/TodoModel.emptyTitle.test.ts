@@ -81,29 +81,29 @@ describe('TodoModel - Empty Title Edge Cases', () => {
 
   describe('addTask with empty description variations', () => {
     test('should handle empty description gracefully', () => {
-      todoModel.addTask('Valid Title', '');
+      todoModel.addTask('Valid Title', undefined, '');
       
       const tasks = todoModel.getTasks();
       expect(tasks[0].description).toBeUndefined();
     });
 
     test('should handle whitespace-only description', () => {
-      todoModel.addTask('Valid Title', '   ');
+      todoModel.addTask('Valid Title', undefined, '   ');
       
       const tasks = todoModel.getTasks();
       expect(tasks[0].description).toBeUndefined();
     });
 
     test('should trim description with leading/trailing whitespace', () => {
-      todoModel.addTask('Valid Title', '  Valid Description  ');
+      todoModel.addTask('Valid Title', undefined, '  Valid Description  ');
       
       const tasks = todoModel.getTasks();
       expect(tasks[0].description).toBe('Valid Description');
     });
 
     test('should handle null and undefined description', () => {
-      todoModel.addTask('Valid Title', null as any);
-      todoModel.addTask('Valid Title 2', undefined);
+      todoModel.addTask('Valid Title', undefined, null as any);
+      todoModel.addTask('Valid Title 2', undefined, undefined);
       
       const tasks = todoModel.getTasks();
       expect(tasks[0].description).toBeUndefined();

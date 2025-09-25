@@ -73,9 +73,9 @@ describe('TodoModel - Empty State Edge Cases', () => {
   describe('no search results scenarios', () => {
     beforeEach(() => {
       // Add some tasks first
-      todoModel.addTask('Buy groceries', 'Get milk and bread');
-      todoModel.addTask('Walk the dog', 'Take Rex for a walk in the park');
-      todoModel.addTask('Code review', 'Review PR #123');
+      todoModel.addTask('Buy groceries', undefined, 'Get milk and bread');
+      todoModel.addTask('Walk the dog', undefined, 'Take Rex for a walk in the park');
+      todoModel.addTask('Code review', undefined, 'Review PR #123');
     });
 
     test('should return empty array when search term has no matches', () => {

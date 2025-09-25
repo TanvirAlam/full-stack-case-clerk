@@ -15,7 +15,7 @@ describe('TodoModel - Rapid Input Edge Cases', () => {
       
       // Simulate rapid identical task creation attempts
       await simulateRapidClicks(() => {
-        todoModel.addTask(taskTitle, taskDescription);
+        todoModel.addTask(taskTitle, undefined, taskDescription);
       }, 5, 1); // 5 clicks with 1ms delay
       
       const tasks = todoModel.getTasks();
@@ -79,9 +79,9 @@ describe('TodoModel - Rapid Input Edge Cases', () => {
   describe('rapid task operations', () => {
     beforeEach(() => {
       // Setup some tasks for manipulation
-      todoModel.addTask('Task 1', 'Description 1');
-      todoModel.addTask('Task 2', 'Description 2');
-      todoModel.addTask('Task 3', 'Description 3');
+      todoModel.addTask('Task 1', undefined, 'Description 1');
+      todoModel.addTask('Task 2', undefined, 'Description 2');
+      todoModel.addTask('Task 3', undefined, 'Description 3');
     });
 
     test('should handle rapid toggle operations on same task', async () => {
@@ -149,10 +149,10 @@ describe('TodoModel - Rapid Input Edge Cases', () => {
 
   describe('rapid search and filtering', () => {
     beforeEach(() => {
-      todoModel.addTask('Apple task', 'About apples');
-      todoModel.addTask('Banana task', 'About bananas');
-      todoModel.addTask('Cherry task', 'About cherries');
-      todoModel.addTask('Date task', 'About dates');
+      todoModel.addTask('Apple task', undefined, 'About apples');
+      todoModel.addTask('Banana task', undefined, 'About bananas');
+      todoModel.addTask('Cherry task', undefined, 'About cherries');
+      todoModel.addTask('Date task', undefined, 'About dates');
     });
 
     test('should handle rapid search operations', async () => {

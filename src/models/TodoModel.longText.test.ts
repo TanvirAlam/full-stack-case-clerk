@@ -57,7 +57,7 @@ describe('TodoModel - Long Text Edge Cases', () => {
     test('should handle very long descriptions', () => {
       const longDescription = 'B'.repeat(5000);
       
-      todoModel.addTask('Short Title', longDescription);
+      todoModel.addTask('Short Title', undefined, longDescription);
       
       const tasks = todoModel.getTasks();
       expect(tasks).toHaveLength(1);
@@ -69,7 +69,7 @@ describe('TodoModel - Long Text Edge Cases', () => {
       const shortTitle = 'Title';
       const longDescription = 'This is a very long description that contains much more text than the title. '.repeat(50);
       
-      todoModel.addTask(shortTitle, longDescription);
+      todoModel.addTask(shortTitle, undefined, longDescription);
       
       const tasks = todoModel.getTasks();
       expect(tasks).toHaveLength(1);
@@ -88,7 +88,7 @@ describe('TodoModel - Long Text Edge Cases', () => {
         And this continues for many more paragraphs...
       `.repeat(20);
       
-      todoModel.addTask('Task with Long Description', multiParagraphDescription);
+      todoModel.addTask('Task with Long Description', undefined, multiParagraphDescription);
       
       const tasks = todoModel.getTasks();
       expect(tasks[0].description).toContain('first paragraph');
@@ -117,7 +117,7 @@ describe('TodoModel - Long Text Edge Cases', () => {
 
     test('should provide truncated description for display', () => {
       const longDescription = 'B'.repeat(500);
-      todoModel.addTask('Title', longDescription);
+      todoModel.addTask('Title', undefined, longDescription);
       
       const tasks = todoModel.getTasks();
       const task = tasks[0];
@@ -166,7 +166,7 @@ describe('TodoModel - Long Text Edge Cases', () => {
       for (let i = 0; i < 100; i++) {
         const longTitle = `Task ${i} with very long title `.repeat(20);
         const longDescription = `Description ${i} with extensive details `.repeat(50);
-        todoModel.addTask(longTitle, longDescription);
+        todoModel.addTask(longTitle, undefined, longDescription);
       }
       
       const endTime = Date.now();
@@ -183,7 +183,7 @@ describe('TodoModel - Long Text Edge Cases', () => {
       for (let i = 0; i < 50; i++) {
         const longTitle = 'A'.repeat(1000) + (i % 10 === 0 ? searchTerm : '') + 'B'.repeat(1000);
         const longDescription = 'C'.repeat(2000) + (i % 15 === 0 ? searchTerm : '') + 'D'.repeat(2000);
-        todoModel.addTask(longTitle, longDescription);
+        todoModel.addTask(longTitle, undefined, longDescription);
       }
       
       const startTime = Date.now();
@@ -207,7 +207,7 @@ describe('TodoModel - Long Text Edge Cases', () => {
       ];
       
       unicodeTitles.forEach((title, index) => {
-        todoModel.addTask(title, `Description ${index} with Unicode: ${title}`);
+        todoModel.addTask(title, undefined, `Description ${index} with Unicode: ${title}`);
       });
       
       const tasks = todoModel.getTasks();
@@ -225,7 +225,7 @@ describe('TodoModel - Long Text Edge Cases', () => {
       const title = '&lt;script&gt;alert("XSS")&lt;/script&gt; &amp; other HTML entities';
       const description = '&quot;Quoted text&quot; &apos;with apostrophes&apos; and &copy; symbols';
       
-      todoModel.addTask(title, description);
+      todoModel.addTask(title, undefined, description);
       
       const tasks = todoModel.getTasks();
       expect(tasks[0].title).toBe(title);
@@ -238,7 +238,7 @@ describe('TodoModel - Long Text Edge Cases', () => {
       const longTitle = 'X'.repeat(10000);
       const longDescription = 'Y'.repeat(50000);
       
-      todoModel.addTask(longTitle, longDescription);
+      todoModel.addTask(longTitle, undefined, longDescription);
       const task = todoModel.getTasks()[0];
       
       expect(todoModel.getTasks()).toHaveLength(1);
@@ -250,7 +250,7 @@ describe('TodoModel - Long Text Edge Cases', () => {
     });
 
     test('should handle task updates with long text', () => {
-      todoModel.addTask('Short title', 'Short description');
+      todoModel.addTask('Short title', undefined, 'Short description');
       const task = todoModel.getTasks()[0];
       
       // Toggle task status

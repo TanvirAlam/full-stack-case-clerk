@@ -17,6 +17,7 @@ describe('TodoController - Edge Cases', () => {
     test('should handle empty title gracefully', () => {
       const mockFormData = {
         title: '',
+        subtitle: '',
         description: 'Valid description',
         priority: TASK_PRIORITIES.MEDIUM as 'medium',
         resetForm: jest.fn(),
@@ -37,6 +38,7 @@ describe('TodoController - Edge Cases', () => {
     test('should handle whitespace-only title gracefully', () => {
       const mockFormData = {
         title: '   \t\n   ',
+        subtitle: '',
         description: 'Valid description',
         priority: TASK_PRIORITIES.HIGH as 'high',
         resetForm: jest.fn(),
@@ -55,6 +57,7 @@ describe('TodoController - Edge Cases', () => {
       const unicodeWhitespace = '\u00A0\u2000\u200B'; // Non-breaking space, en quad, zero-width space
       const mockFormData = {
         title: unicodeWhitespace,
+        subtitle: '',
         description: 'Description',
         priority: TASK_PRIORITIES.LOW as 'low',
         resetForm: jest.fn(),
@@ -72,6 +75,7 @@ describe('TodoController - Edge Cases', () => {
     test('should process valid title after trimming whitespace', () => {
       const mockFormData = {
         title: '  Valid Task Title  ',
+        subtitle: '  Valid subtitle  ',
         description: '  Valid description  ',
         priority: TASK_PRIORITIES.HIGH as 'high',
         resetForm: jest.fn(),
@@ -94,6 +98,7 @@ describe('TodoController - Edge Cases', () => {
       const longTitle = 'A'.repeat(1000);
       const mockFormData = {
         title: longTitle,
+        subtitle: 'Short subtitle',
         description: 'Short description',
         priority: TASK_PRIORITIES.MEDIUM as 'medium',
         resetForm: jest.fn(),
@@ -112,6 +117,7 @@ describe('TodoController - Edge Cases', () => {
       const longDescription = 'B'.repeat(5000);
       const mockFormData = {
         title: 'Short Title',
+        subtitle: 'Short subtitle',
         description: longDescription,
         priority: TASK_PRIORITIES.LOW as 'low',
         resetForm: jest.fn(),
@@ -130,6 +136,7 @@ describe('TodoController - Edge Cases', () => {
       const specialTitle = '🚀 Task with émojis & spécial chars: ñoñó 测试 🎯';
       const mockFormData = {
         title: specialTitle,
+        subtitle: 'Subtitle with 测试',
         description: 'Description with 测试 Chinese & émojis 🎉',
         priority: TASK_PRIORITIES.HIGH as 'high',
         resetForm: jest.fn(),
@@ -164,9 +171,9 @@ describe('TodoController - Edge Cases', () => {
 
     test('should handle empty search results', () => {
       // Add some tasks first
-      todoModel.addTask('Apple Task', 'About apples');
-      todoModel.addTask('Banana Task', 'About bananas');
-      todoModel.addTask('Cherry Task', 'About cherries');
+      todoModel.addTask('Apple Task', undefined, 'About apples');
+      todoModel.addTask('Banana Task', undefined, 'About bananas');
+      todoModel.addTask('Cherry Task', undefined, 'About cherries');
 
       expect(todoModel.getTasks()).toHaveLength(3);
 
@@ -221,6 +228,7 @@ describe('TodoController - Edge Cases', () => {
     test('should handle rapid form submissions', () => {
       const mockFormData = {
         title: 'Rapid Task',
+        subtitle: 'Rapid subtitle',
         description: 'Same task added rapidly',
         priority: TASK_PRIORITIES.MEDIUM as 'medium',
         resetForm: jest.fn(),
@@ -309,6 +317,7 @@ describe('TodoController - Edge Cases', () => {
       // Should still be able to add tasks
       const mockFormData = {
         title: 'Recovery Task',
+        subtitle: 'Recovery subtitle',
         description: 'After corruption',
         priority: TASK_PRIORITIES.HIGH as 'high',
         resetForm: jest.fn(),
@@ -336,7 +345,7 @@ describe('TodoController - Edge Cases', () => {
     });
 
     test('should handle localStorage quota exceeded', () => {
-      todoModel.addTask('Test Task', 'Description');
+      todoModel.addTask('Test Task', undefined, 'Description');
       
       // Mock localStorage.setItem to throw quota exceeded error
       const originalSetItem = Storage.prototype.setItem;
@@ -346,6 +355,7 @@ describe('TodoController - Edge Cases', () => {
       
       const mockFormData = {
         title: 'Another Task',
+        subtitle: 'Another subtitle',
         description: 'Should handle quota error',
         priority: TASK_PRIORITIES.LOW as 'low',
         resetForm: jest.fn(),
@@ -363,10 +373,10 @@ describe('TodoController - Edge Cases', () => {
   describe('Search and Filter Edge Cases', () => {
     beforeEach(() => {
       // Setup test data with various characteristics
-      todoModel.addTask('JavaScript Task', 'Learn React hooks');
-      todoModel.addTask('Python Task', 'Build web scraper with Python');
-      todoModel.addTask('Design Task', 'Create UI mockups');
-      todoModel.addTask('Testing Task', 'Write unit tests');
+      todoModel.addTask('JavaScript Task', undefined, 'Learn React hooks');
+      todoModel.addTask('Python Task', undefined, 'Build web scraper with Python');
+      todoModel.addTask('Design Task', undefined, 'Create UI mockups');
+      todoModel.addTask('Testing Task', undefined, 'Write unit tests');
       
       // Complete some tasks
       const tasks = todoModel.getTasks();
@@ -402,7 +412,7 @@ describe('TodoController - Edge Cases', () => {
     });
 
     test('should handle special characters in search', () => {
-      todoModel.addTask('Special Task: @#$%', 'Contains símbolos & ñoñó');
+      todoModel.addTask('Special Task: @#$%', undefined, 'Contains símbolos & ñoñó');
       
       const symbolResults = controller.getFilteredTasks(TASK_FILTERS.ALL, '@#$');
       expect(symbolResults).toHaveLength(1);
@@ -432,6 +442,7 @@ describe('TodoController - Edge Cases', () => {
     test('should handle form data with null values', () => {
       const mockFormData = {
         title: 'Valid Title',
+        subtitle: 'Valid subtitle',
         description: null as any,
         priority: TASK_PRIORITIES.MEDIUM as 'medium',
         resetForm: jest.fn(),
@@ -449,6 +460,7 @@ describe('TodoController - Edge Cases', () => {
     test('should handle form data with undefined values', () => {
       const mockFormData = {
         title: 'Valid Title',
+        subtitle: 'Valid subtitle',
         description: undefined as any,
         priority: TASK_PRIORITIES.LOW as 'low',
         resetForm: jest.fn(),
@@ -468,6 +480,7 @@ describe('TodoController - Edge Cases', () => {
       priorities.forEach((priority, index) => {
         const mockFormData = {
           title: `Task ${index}`,
+          subtitle: `Subtitle ${index}`,
           description: `Priority: ${priority}`,
           priority: priority as any,
           resetForm: jest.fn(),
@@ -495,6 +508,7 @@ describe('TodoController - Edge Cases', () => {
       for (let i = 0; i < 100; i++) { // Reduced from 1000 for faster test execution
         const mockFormData = {
           title: `Performance Task ${i}`,
+          subtitle: `Performance subtitle ${i}`,
           description: `Task number ${i} for performance testing`,
           priority: TASK_PRIORITIES.MEDIUM as 'medium',
           resetForm: jest.fn(),
@@ -515,6 +529,7 @@ describe('TodoController - Edge Cases', () => {
       for (let i = 0; i < 50; i++) { // Reduced from 500 for faster test execution
         const mockFormData = {
           title: `Task ${i} ${i % 10 === 0 ? 'FINDME' : 'normal'}`,
+          subtitle: `Subtitle ${i}`,
           description: `Description ${i}`,
           priority: TASK_PRIORITIES.LOW as 'low',
           resetForm: jest.fn(),

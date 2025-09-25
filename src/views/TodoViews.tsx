@@ -52,9 +52,11 @@ export const HeaderView: React.FC<HeaderViewProps> = ({ title, subtitle }) => (
 // Task Form View
 interface TaskFormViewProps {
   title: string;
+  subtitle: string;
   description: string;
   priority: 'low' | 'medium' | 'high';
   onTitleChange: (value: string) => void;
+  onSubtitleChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onPriorityChange: (value: 'low' | 'medium' | 'high') => void;
   onSubmit: (e: React.FormEvent) => void;
@@ -62,9 +64,11 @@ interface TaskFormViewProps {
 
 export const TaskFormView: React.FC<TaskFormViewProps> = ({
   title,
+  subtitle,
   description,
   priority,
   onTitleChange,
+  onSubtitleChange,
   onDescriptionChange,
   onPriorityChange,
   onSubmit,
@@ -78,6 +82,12 @@ export const TaskFormView: React.FC<TaskFormViewProps> = ({
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
           required
+        />
+        <Input
+          type={INPUT_TYPES.TEXT}
+          placeholder={PLACEHOLDERS.TASK_SUBTITLE}
+          value={subtitle}
+          onChange={(e) => onSubtitleChange(e.target.value)}
         />
         <Input
           type={INPUT_TYPES.TEXT}
@@ -169,6 +179,11 @@ export const TaskView: React.FC<TaskViewProps> = ({ task, onToggle, onDelete }) 
       <TaskTitle $completed={task.completed}>
         {task.title}
       </TaskTitle>
+      {task.subtitle && (
+        <TaskDescription $completed={task.completed} style={{ fontWeight: 500, fontSize: '1rem', marginBottom: '0.25rem' }}>
+          {task.subtitle}
+        </TaskDescription>
+      )}
       {task.description && (
         <TaskDescription $completed={task.completed}>
           {task.description}

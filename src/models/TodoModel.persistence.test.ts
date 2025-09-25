@@ -383,8 +383,8 @@ describe('TodoModel - Persistence Corruption Edge Cases', () => {
       expect(todoModel.isEmpty()).toBe(true);
       
       // Should work normally after recovery
-      todoModel.addTask('First Task', 'After recovery');
-      todoModel.addTask('Second Task', 'Still working');
+      todoModel.addTask('First Task', undefined, 'After recovery');
+      todoModel.addTask('Second Task', undefined, 'Still working');
       
       expect(todoModel.getTasks()).toHaveLength(2);
       expect(todoModel.getTaskStats().total).toBe(2);

@@ -75,6 +75,7 @@ export const filterTasksBySearch = (tasks: Task[], searchQuery: string): Task[] 
   const query = searchQuery.toLowerCase();
   return tasks.filter(task => 
     task.title.toLowerCase().includes(query) ||
+    (task.subtitle && task.subtitle.toLowerCase().includes(query)) ||
     (task.description && task.description.toLowerCase().includes(query))
   );
 };

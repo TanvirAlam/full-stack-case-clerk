@@ -25,6 +25,7 @@ export const PRIORITY_COLORS = {
 // Form Placeholders
 export const PLACEHOLDERS = {
   TASK_TITLE: 'What needs to be done?',
+  TASK_SUBTITLE: 'Add a short summary (optional)',
   TASK_DESCRIPTION: 'Add a description (optional)',
   SEARCH_TASKS: 'Search tasks...',
 } as const;

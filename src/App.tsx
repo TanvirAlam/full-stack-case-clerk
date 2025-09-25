@@ -16,6 +16,8 @@ function App() {
   const {
     title,
     setTitle,
+    subtitle,
+    setSubtitle,
     description,
     setDescription,
     priority,
@@ -33,6 +35,7 @@ function App() {
     handleAddTask,
     handleToggleTask,
     handleDeleteTask,
+    handleUpdateTask,
   } = useTodoController(model);
 
   return (
@@ -45,9 +48,11 @@ function App() {
         />
         <TaskFormView
           title={title}
+          subtitle={subtitle}
           description={description}
           priority={priority}
           onTitleChange={setTitle}
+          onSubtitleChange={setSubtitle}
           onDescriptionChange={setDescription}
           onPriorityChange={setPriority}
           onSubmit={handleAddTask}
