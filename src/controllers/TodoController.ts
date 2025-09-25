@@ -72,8 +72,13 @@ export class TodoController {
     resetForm: () => void;
   }) => {
     e.preventDefault();
+    const initialTaskCount = this.model.getTasks().length;
     this.model.addTask(formData.title, formData.description, formData.priority);
-    formData.resetForm();
+    
+    // Only reset form if task was actually added
+    if (this.model.getTasks().length > initialTaskCount) {
+      formData.resetForm();
+    }
   };
 
   handleToggleTask = (id: string) => {
