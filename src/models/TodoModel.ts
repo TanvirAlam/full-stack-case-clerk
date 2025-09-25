@@ -9,6 +9,7 @@ import {
   calculateTaskStats,
   isEffectivelyEmpty,
 } from '../utils/utils';
+import { TASK_PRIORITIES } from '../utils/const';
 
 export class TodoModel {
   private tasks: Task[] = [];
@@ -33,7 +34,7 @@ export class TodoModel {
     return [...this.tasks];
   }
 
-  addTask(title: string, description?: string, priority: Task['priority'] = 'medium'): void {
+  addTask(title: string, description?: string, priority: Task['priority'] = TASK_PRIORITIES.MEDIUM): void {
     if (!title || typeof title !== 'string' || isEffectivelyEmpty(title)) return;
 
     const newTask: Task = {

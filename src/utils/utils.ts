@@ -1,10 +1,19 @@
 import type { Task, TaskFilter, TaskStats } from '../types/types';
+import {
+  STORAGE_KEYS,
+  ERROR_MESSAGES,
+  PRIORITY_COLORS,
+  TASK_FILTERS,
+  PRIORITY_ORDER,
+  TASK_PRIORITIES,
+  UNICODE_WHITESPACE_PATTERN,
+} from './const';
 
 // Comprehensive whitespace checking including Unicode whitespace
 export const isEffectivelyEmpty = (str: string): boolean => {
   if (!str) return true;
   // Remove all Unicode whitespace characters and check if anything remains
-  const withoutUnicodeWhitespace = str.replace(/[\u00A0\u1680\u2000-\u200B\u2028\u2029\u202F\u205F\u3000\uFEFF]/g, '');
+  const withoutUnicodeWhitespace = str.replace(UNICODE_WHITESPACE_PATTERN, '');
   return withoutUnicodeWhitespace.trim() === '';
 };
 
@@ -13,7 +22,7 @@ export const generateId = (): string => Math.random().toString(36).substr(2, 9);
 
 // LocalStorage Operations
 export const loadTasksFromStorage = (): Task[] => {
-  const savedTasks = localStorage.getItem('todos');
+  const savedTasks = localStorage.getItem(STORAGE_KEYS.TODOS);
   if (savedTasks) {
     try {
       const parsed = JSON.parse(savedTasks);
@@ -30,32 +39,32 @@ export const loadTasksFromStorage = (): Task[] => {
       }
       return [];
     } catch (error) {
-      console.error('Error parsing saved tasks:', error);
-      localStorage.removeItem('todos');
+      console.error(ERROR_MESSAGES.PARSING_TASKS, error);
+      localStorage.removeItem(STORAGE_KEYS.TODOS);
     }
   }
   return [];
 };
 
 export const saveTasksToStorage = (tasks: Task[]): void => {
-  localStorage.setItem('todos', JSON.stringify(tasks));
+  localStorage.setItem(STORAGE_KEYS.TODOS, JSON.stringify(tasks));
 };
 
 // Priority Colors
 export const getPriorityColor = (priority: Task['priority']): string => {
   switch (priority) {
-    case 'high': return '#ff6b6b';
-    case 'medium': return '#ffd43b';
-    case 'low': return '#51cf66';
-    default: return '#adb5bd';
+    case TASK_PRIORITIES.HIGH: return PRIORITY_COLORS.HIGH;
+    case TASK_PRIORITIES.MEDIUM: return PRIORITY_COLORS.MEDIUM;
+    case TASK_PRIORITIES.LOW: return PRIORITY_COLORS.LOW;
+    default: return PRIORITY_COLORS.DEFAULT;
   }
 };
 
 // Task Filtering and Sorting
 export const filterTasksByStatus = (tasks: Task[], filter: TaskFilter): Task[] => {
   switch (filter) {
-    case 'active': return tasks.filter(task => !task.completed);
-    case 'done': return tasks.filter(task => task.completed);
+    case TASK_FILTERS.ACTIVE: return tasks.filter(task => !task.completed);
+    case TASK_FILTERS.DONE: return tasks.filter(task => task.completed);
     default: return tasks;
   }
 };
@@ -77,9 +86,8 @@ export const sortTasks = (tasks: Task[]): Task[] => {
       return a.completed ? 1 : -1;
     }
     // Then by priority
-    const priorityOrder = { high: 3, medium: 2, low: 1 };
-    if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
-      return priorityOrder[b.priority] - priorityOrder[a.priority];
+    if (PRIORITY_ORDER[a.priority] !== PRIORITY_ORDER[b.priority]) {
+      return PRIORITY_ORDER[b.priority] - PRIORITY_ORDER[a.priority];
     }
     // Finally by creation date (newest first)
     return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();

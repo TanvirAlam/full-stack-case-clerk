@@ -1,6 +1,17 @@
 import type { Task, TaskFilter, TaskStats } from '../types/types';
 import { getPriorityColor } from '../utils/utils';
 import {
+  PLACEHOLDERS,
+  BUTTON_LABELS,
+  FILTER_LABELS,
+  EMPTY_STATE,
+  TASK_PRIORITIES,
+  TASK_FILTERS,
+  INPUT_TYPES,
+  BUTTON_VARIANTS,
+  CSS_VALUES,
+} from '../utils/const';
+import {
   Header,
   Title,
   Subtitle,
@@ -62,29 +73,29 @@ export const TaskFormView: React.FC<TaskFormViewProps> = ({
     <Form onSubmit={onSubmit}>
       <InputGroup>
         <Input
-          type="text"
-          placeholder="What needs to be done?"
+          type={INPUT_TYPES.TEXT}
+          placeholder={PLACEHOLDERS.TASK_TITLE}
           value={title}
           onChange={(e) => onTitleChange(e.target.value)}
           required
         />
         <Input
-          type="text"
-          placeholder="Add a description (optional)"
+          type={INPUT_TYPES.TEXT}
+          placeholder={PLACEHOLDERS.TASK_DESCRIPTION}
           value={description}
           onChange={(e) => onDescriptionChange(e.target.value)}
         />
       </InputGroup>
-      <InputGroup style={{ minWidth: '140px' }}>
+      <InputGroup style={{ minWidth: CSS_VALUES.MIN_WIDTH_140 }}>
         <Select 
           value={priority} 
           onChange={(e) => onPriorityChange(e.target.value as 'low' | 'medium' | 'high')}
         >
-          <option value="low">Low Priority</option>
-          <option value="medium">Medium Priority</option>
-          <option value="high">High Priority</option>
+          <option value={TASK_PRIORITIES.LOW}>{BUTTON_LABELS.LOW_PRIORITY}</option>
+          <option value={TASK_PRIORITIES.MEDIUM}>{BUTTON_LABELS.MEDIUM_PRIORITY}</option>
+          <option value={TASK_PRIORITIES.HIGH}>{BUTTON_LABELS.HIGH_PRIORITY}</option>
         </Select>
-        <Button type="submit">Add Task</Button>
+        <Button type={INPUT_TYPES.SUBMIT}>{BUTTON_LABELS.ADD_TASK}</Button>
       </InputGroup>
     </Form>
   </Card>
@@ -113,32 +124,32 @@ export const FiltersView: React.FC<FiltersViewProps> = ({
   return (
     <Card>
       <SearchInput
-        type="text"
-        placeholder="Search tasks..."
+        type={INPUT_TYPES.TEXT}
+        placeholder={PLACEHOLDERS.SEARCH_TASKS}
         value={searchQuery}
         onChange={(e) => onSearchChange(e.target.value)}
       />
       
       <FilterButtons>
         <Button
-          variant={filter === 'all' ? 'primary' : 'secondary'}
-          onClick={() => onFilterChange('all')}
+          variant={filter === TASK_FILTERS.ALL ? BUTTON_VARIANTS.PRIMARY : BUTTON_VARIANTS.SECONDARY}
+          onClick={() => onFilterChange(TASK_FILTERS.ALL)}
         >
-          All ({taskStats.total})
+          {FILTER_LABELS.ALL} ({taskStats.total})
         </Button>
         
         <Button
-          variant={filter === 'active' ? 'primary' : 'secondary'}
-          onClick={() => onFilterChange('active')}
+          variant={filter === TASK_FILTERS.ACTIVE ? BUTTON_VARIANTS.PRIMARY : BUTTON_VARIANTS.SECONDARY}
+          onClick={() => onFilterChange(TASK_FILTERS.ACTIVE)}
         >
-          Active ({taskStats.active})
+          {FILTER_LABELS.ACTIVE} ({taskStats.active})
         </Button>
         
         <Button
-          variant={filter === 'done' ? 'primary' : 'secondary'}
-          onClick={() => onFilterChange('done')}
+          variant={filter === TASK_FILTERS.DONE ? BUTTON_VARIANTS.PRIMARY : BUTTON_VARIANTS.SECONDARY}
+          onClick={() => onFilterChange(TASK_FILTERS.DONE)}
         >
-          Done ({taskStats.completed})
+          {FILTER_LABELS.DONE} ({taskStats.completed})
         </Button>
       </FilterButtons>
     </Card>
@@ -173,16 +184,16 @@ export const TaskView: React.FC<TaskViewProps> = ({ task, onToggle, onDelete }) 
     
     <TaskActions>
       <Button
-        variant={task.completed ? 'secondary' : 'success'}
+        variant={task.completed ? BUTTON_VARIANTS.SECONDARY : BUTTON_VARIANTS.SUCCESS}
         onClick={() => onToggle(task.id)}
       >
-        {task.completed ? '↶' : '✓'}
+        {task.completed ? BUTTON_LABELS.UNDO : BUTTON_LABELS.COMPLETE}
       </Button>
       <Button
-        variant="danger"
+        variant={BUTTON_VARIANTS.DANGER}
         onClick={() => onDelete(task.id)}
       >
-        🗑
+        {BUTTON_LABELS.DELETE}
       </Button>
     </TaskActions>
   </TaskItem>
@@ -203,10 +214,10 @@ export const EmptyStateView: React.FC<EmptyStateViewProps> = ({
   if (!hasAnyTasks) {
     return (
       <EmptyState>
-        <EmptyIcon>✨</EmptyIcon>
-        <EmptyTitle>All caught up!</EmptyTitle>
+        <EmptyIcon>{EMPTY_STATE.NO_TASKS.ICON}</EmptyIcon>
+        <EmptyTitle>{EMPTY_STATE.NO_TASKS.TITLE}</EmptyTitle>
         <EmptyDescription>
-          No tasks here. Time to add something new or enjoy the moment!
+          {EMPTY_STATE.NO_TASKS.DESCRIPTION}
         </EmptyDescription>
       </EmptyState>
     );
@@ -214,10 +225,10 @@ export const EmptyStateView: React.FC<EmptyStateViewProps> = ({
 
   return (
     <EmptyState>
-      <EmptyIcon>🔍</EmptyIcon>
-      <EmptyTitle>No tasks found</EmptyTitle>
+      <EmptyIcon>{EMPTY_STATE.NO_SEARCH_RESULTS.ICON}</EmptyIcon>
+      <EmptyTitle>{EMPTY_STATE.NO_SEARCH_RESULTS.TITLE}</EmptyTitle>
       <EmptyDescription>
-        Try adjusting your search or filter criteria
+        {EMPTY_STATE.NO_SEARCH_RESULTS.DESCRIPTION}
       </EmptyDescription>
     </EmptyState>
   );

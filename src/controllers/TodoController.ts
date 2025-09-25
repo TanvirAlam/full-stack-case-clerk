@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import type { TaskFilter } from '../types/types';
 import { TodoModel } from '../models/TodoModel';
+import { TASK_PRIORITIES, TASK_FILTERS } from '../utils/const';
 
 export class TodoController {
   private model: TodoModel;
@@ -13,12 +14,12 @@ export class TodoController {
   createFormState() {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
+    const [priority, setPriority] = useState<'low' | 'medium' | 'high'>(TASK_PRIORITIES.MEDIUM);
 
     const resetForm = useCallback(() => {
       setTitle('');
       setDescription('');
-      setPriority('medium');
+      setPriority(TASK_PRIORITIES.MEDIUM);
     }, []);
 
     return {
@@ -34,7 +35,7 @@ export class TodoController {
 
   // Filter state management
   createFilterState() {
-    const [filter, setFilter] = useState<TaskFilter>('all');
+    const [filter, setFilter] = useState<TaskFilter>(TASK_FILTERS.ALL);
     const [searchQuery, setSearchQuery] = useState('');
 
     return {

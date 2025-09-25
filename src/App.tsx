@@ -8,6 +8,7 @@ import {
   FiltersView,
   TaskListView,
 } from './views/TodoViews';
+import { APP_CONFIG } from './utils/const';
 
 function App() {
   const model = useMemo(() => new TodoModel(), []);
@@ -39,8 +40,8 @@ function App() {
       <GlobalStyle />
       <Container>
         <HeaderView 
-          title="✨ Todo Master"
-          subtitle="Organize your life, one task at a time"
+          title={APP_CONFIG.TITLE}
+          subtitle={APP_CONFIG.SUBTITLE}
         />
         <TaskFormView
           title={title}

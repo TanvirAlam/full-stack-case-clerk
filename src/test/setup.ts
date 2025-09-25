@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import { TEST_CONSTANTS, STORAGE_KEYS } from '../utils/const';
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -44,7 +45,7 @@ beforeEach(() => {
 
 afterEach(() => {
   // Restore console methods after each test if needed for debugging
-  if (process.env.NODE_ENV !== 'test') {
+  if (process.env.NODE_ENV !== TEST_CONSTANTS.NODE_ENV_TEST) {
     console.error = originalConsoleError;
     console.warn = originalConsoleWarn;
   }
@@ -52,9 +53,9 @@ afterEach(() => {
 
 // Global test utilities
 export const createMockTask = (overrides: Partial<import('../types/types').Task> = {}) => ({
-  id: 'test-id-' + Math.random().toString(36).substr(2, 9),
-  title: 'Test Task',
-  description: 'Test Description',
+  id: TEST_CONSTANTS.TEST_ID_PREFIX + Math.random().toString(36).substr(2, 9),
+  title: TEST_CONSTANTS.TEST_TASK_TITLE,
+  description: TEST_CONSTANTS.TEST_TASK_DESCRIPTION,
   completed: false,
   priority: 'medium' as const,
   createdAt: new Date().toISOString(),
@@ -70,7 +71,7 @@ export const createMockTasks = (count: number) =>
 
 // Mock corrupted localStorage
 export const corruptLocalStorage = (corruptedData: string) => {
-  localStorage.setItem('todos', corruptedData);
+  localStorage.setItem(STORAGE_KEYS.TODOS, corruptedData);
 };
 
 // Utility to wait for async operations
