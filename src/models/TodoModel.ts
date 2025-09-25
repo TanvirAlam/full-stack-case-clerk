@@ -131,6 +131,21 @@ export class TodoModel {
     return this.tasks.find(task => task.id === id);
   }
 
+  reorderTasks(startIndex: number, endIndex: number): void {
+    if (startIndex === endIndex || startIndex < 0 || endIndex < 0 || 
+        startIndex >= this.tasks.length || endIndex >= this.tasks.length) {
+      return;
+    }
+
+    const newTasks = [...this.tasks];
+    const [removed] = newTasks.splice(startIndex, 1);
+    newTasks.splice(endIndex, 0, removed);
+    
+    this.tasks = newTasks;
+    this.saveTasks();
+    this.notify();
+  }
+
   // Subtask management
   addSubtask(taskId: string, subtaskTitle: string): void {
     if (!subtaskTitle || typeof subtaskTitle !== 'string' || isEffectivelyEmpty(subtaskTitle)) return;

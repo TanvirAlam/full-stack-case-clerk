@@ -6,7 +6,8 @@ import {
   HeaderView,
   TaskFormView,
   FiltersView,
-  TaskListView,
+  BulkActionsView,
+  DraggableTaskListView,
 } from './views/TodoViews';
 import { APP_CONFIG } from './utils/const';
 import { ToastProvider } from './contexts/ToastContext';
@@ -30,6 +31,15 @@ const AppContent: React.FC<{ model: TodoModel }> = ({ model }) => {
     searchQuery,
     setSearchQuery,
     
+    // Bulk selection state
+    selectedTaskIds,
+    isSelectionMode,
+    selectedCount,
+    toggleSelection,
+    selectAll,
+    clearSelection,
+    toggleSelectionMode,
+    
     taskStats,
     isEmpty,
     filteredTasks,
@@ -37,12 +47,17 @@ const AppContent: React.FC<{ model: TodoModel }> = ({ model }) => {
     handleAddTask,
     handleToggleTask,
     handleDeleteTask,
-    handleUpdateTask,
     
     handleAddSubtask,
     handleToggleSubtask,
     handleDeleteSubtask,
-    handleUpdateSubtask,
+    
+    // Bulk actions
+    handleBulkComplete,
+    handleBulkDelete,
+    
+    // Drag and drop
+    handleReorderTasks,
   } = useTodoController(model);
 
   return (
@@ -70,7 +85,23 @@ const AppContent: React.FC<{ model: TodoModel }> = ({ model }) => {
         onFilterChange={setFilter}
         hasAnyTasks={!isEmpty}
       />
-      <TaskListView
+      <BulkActionsView
+        selectedCount={selectedCount}
+        isSelectionMode={isSelectionMode}
+        onToggleSelectionMode={toggleSelectionMode}
+        onSelectAll={() => selectAll(filteredTasks.map(task => task.id))}
+        onClearSelection={clearSelection}
+        onBulkComplete={() => {
+          handleBulkComplete(Array.from(selectedTaskIds));
+          clearSelection();
+        }}
+        onBulkDelete={() => {
+          handleBulkDelete(Array.from(selectedTaskIds));
+          clearSelection();
+        }}
+        totalVisibleTasks={filteredTasks.length}
+      />
+      <DraggableTaskListView
         tasks={filteredTasks}
         hasAnyTasks={!isEmpty}
         onToggleTask={handleToggleTask}
@@ -78,6 +109,10 @@ const AppContent: React.FC<{ model: TodoModel }> = ({ model }) => {
         onAddSubtask={handleAddSubtask}
         onToggleSubtask={handleToggleSubtask}
         onDeleteSubtask={handleDeleteSubtask}
+        isSelectionMode={isSelectionMode}
+        selectedTaskIds={selectedTaskIds}
+        onToggleSelection={toggleSelection}
+        onReorderTasks={handleReorderTasks}
       />
     </Container>
   );

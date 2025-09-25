@@ -2,7 +2,8 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { ToastProvider } from '../contexts/ToastContext';
 import { UndoProvider } from '../contexts/UndoContext';
 import { ToastContainer } from '../components/ToastContainer';
@@ -23,16 +24,14 @@ describe('Usability Features Integration', () => {
   );
 
   test('ToastProvider and UndoProvider should wrap components without error', () => {
-    expect(() => {
-      render(
-        <TestWrapper>
-          <div>Test Content</div>
-          <ToastContainer />
-        </TestWrapper>
-      );
-    }).not.toThrow();
+    const { getByText } = render(
+      <TestWrapper>
+        <div>Test Content</div>
+        <ToastContainer />
+      </TestWrapper>
+    );
 
-    expect(screen.getByText('Test Content')).toBeInTheDocument();
+    expect(getByText('Test Content')).toBeInTheDocument();
   });
 
   test('ToastContainer should render empty when no toasts', () => {

@@ -57,6 +57,52 @@ export class TodoController {
     };
   }
 
+  // Bulk selection state management
+  createBulkSelectionState() {
+    const [selectedTaskIds, setSelectedTaskIds] = useState<Set<string>>(new Set());
+    const [isSelectionMode, setIsSelectionMode] = useState(false);
+
+    const toggleSelection = useCallback((taskId: string) => {
+      setSelectedTaskIds(prev => {
+        const newSet = new Set(prev);
+        if (newSet.has(taskId)) {
+          newSet.delete(taskId);
+        } else {
+          newSet.add(taskId);
+        }
+        return newSet;
+      });
+    }, []);
+
+    const selectAll = useCallback((taskIds: string[]) => {
+      setSelectedTaskIds(new Set(taskIds));
+    }, []);
+
+    const clearSelection = useCallback(() => {
+      setSelectedTaskIds(new Set());
+    }, []);
+
+    const toggleSelectionMode = useCallback(() => {
+      setIsSelectionMode(prev => {
+        if (prev) {
+          // Exiting selection mode, clear all selections
+          setSelectedTaskIds(new Set());
+        }
+        return !prev;
+      });
+    }, []);
+
+    return {
+      selectedTaskIds,
+      isSelectionMode,
+      toggleSelection,
+      selectAll,
+      clearSelection,
+      toggleSelectionMode,
+      selectedCount: selectedTaskIds.size,
+    };
+  }
+
   // Model state subscription
   createModelState() {
     const [, forceUpdate] = useState({});
@@ -189,6 +235,99 @@ export class TodoController {
     this.model.updateSubtask(taskId, subtaskId, title);
   };
 
+  // Bulk actions
+  handleBulkComplete = (taskIds: string[]) => {
+    const tasks = taskIds.map(id => this.model.getTaskById(id)).filter(Boolean);
+    const incompleteTasks = tasks.filter(task => !task?.completed);
+    
+    if (incompleteTasks.length === 0) return;
+    
+    if (this.executeWithUndo) {
+      this.executeWithUndo(
+        () => {
+          incompleteTasks.forEach(task => {
+            if (task) this.model.toggleTask(task.id);
+          });
+        },
+        {
+          type: 'BULK_COMPLETE',
+          data: incompleteTasks,
+          undo: () => {
+            incompleteTasks.forEach(task => {
+              if (task) this.model.toggleTask(task.id);
+            });
+          },
+        },
+        `${incompleteTasks.length} task${incompleteTasks.length !== 1 ? 's' : ''} completed`
+      );
+    } else {
+      incompleteTasks.forEach(task => {
+        if (task) this.model.toggleTask(task.id);
+      });
+      this.showToast?.({
+        type: 'success',
+        message: `${incompleteTasks.length} task${incompleteTasks.length !== 1 ? 's' : ''} completed!`,
+        duration: 2000,
+      });
+    }
+  };
+
+  handleBulkDelete = (taskIds: string[]) => {
+    const tasks = taskIds.map(id => this.model.getTaskById(id)).filter(Boolean);
+    
+    if (tasks.length === 0) return;
+    
+    if (this.executeWithUndo) {
+      this.executeWithUndo(
+        () => {
+          taskIds.forEach(id => this.model.deleteTask(id));
+        },
+        {
+          type: 'BULK_DELETE',
+          data: tasks,
+          undo: () => {
+            tasks.forEach(task => {
+              if (task) {
+                this.model.addTask(task.title, task.subtitle, task.description, task.priority);
+                const newTasks = this.model.getTasks();
+                const newTask = newTasks[0];
+                
+                this.model.updateTask(newTask.id, {
+                  title: task.title,
+                  subtitle: task.subtitle,
+                  description: task.description,
+                  priority: task.priority,
+                });
+                
+                if (task.completed) {
+                  this.model.toggleTask(newTask.id);
+                }
+              }
+            });
+          },
+        },
+        `${tasks.length} task${tasks.length !== 1 ? 's' : ''} deleted`
+      );
+    } else {
+      taskIds.forEach(id => this.model.deleteTask(id));
+      this.showToast?.({
+        type: 'success',
+        message: `${tasks.length} task${tasks.length !== 1 ? 's' : ''} deleted!`,
+        duration: 2000,
+      });
+    }
+  };
+
+  // Drag and drop reordering
+  handleReorderTasks = (startIndex: number, endIndex: number) => {
+    this.model.reorderTasks(startIndex, endIndex);
+    this.showToast?.({
+      type: 'success',
+      message: 'Tasks reordered!',
+      duration: 1500,
+    });
+  };
+
   // Computed values
   getFilteredTasks(filter: TaskFilter, searchQuery: string) {
     return this.model.getFilteredTasks(filter, searchQuery);
@@ -204,6 +343,7 @@ export const useTodoController = (model: TodoModel) => {
   
   const formState = controller.createFormState();
   const filterState = controller.createFilterState();
+  const bulkSelectionState = controller.createBulkSelectionState();
   const modelState = controller.createModelState();
   
   // Add keyboard support for form submission
@@ -246,6 +386,7 @@ export const useTodoController = (model: TodoModel) => {
     // State
     ...formState,
     ...filterState,
+    ...bulkSelectionState,
     ...modelState,
     filteredTasks,
     
@@ -261,5 +402,12 @@ export const useTodoController = (model: TodoModel) => {
     handleToggleSubtask: controller.handleToggleSubtask,
     handleDeleteSubtask: controller.handleDeleteSubtask,
     handleUpdateSubtask: controller.handleUpdateSubtask,
+    
+    // Bulk Actions
+    handleBulkComplete: controller.handleBulkComplete,
+    handleBulkDelete: controller.handleBulkDelete,
+    
+    // Drag and Drop
+    handleReorderTasks: controller.handleReorderTasks,
   };
 };

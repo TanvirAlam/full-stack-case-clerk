@@ -178,6 +178,90 @@ export const FiltersView: React.FC<FiltersViewProps> = ({
   );
 };
 
+// Bulk Actions View
+interface BulkActionsViewProps {
+  selectedCount: number;
+  isSelectionMode: boolean;
+  onToggleSelectionMode: () => void;
+  onSelectAll: () => void;
+  onClearSelection: () => void;
+  onBulkComplete: () => void;
+  onBulkDelete: () => void;
+  totalVisibleTasks: number;
+}
+
+export const BulkActionsView: React.FC<BulkActionsViewProps> = ({
+  selectedCount,
+  isSelectionMode,
+  onToggleSelectionMode,
+  onSelectAll,
+  onClearSelection,
+  onBulkComplete,
+  onBulkDelete,
+  totalVisibleTasks,
+}) => {
+  if (totalVisibleTasks === 0) return null;
+
+  return (
+    <Card>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <Button
+          $variant={isSelectionMode ? BUTTON_VARIANTS.PRIMARY : BUTTON_VARIANTS.SECONDARY}
+          onClick={onToggleSelectionMode}
+        >
+          {isSelectionMode ? 'Exit Selection' : 'Select Tasks'}
+        </Button>
+        
+        {isSelectionMode && (
+          <>
+            <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+              {selectedCount} selected
+            </span>
+            
+            {selectedCount < totalVisibleTasks && (
+              <Button
+                $variant={BUTTON_VARIANTS.SECONDARY}
+                onClick={onSelectAll}
+                style={{ fontSize: '0.85rem' }}
+              >
+                Select All
+              </Button>
+            )}
+            
+            {selectedCount > 0 && (
+              <>
+                <Button
+                  $variant={BUTTON_VARIANTS.SECONDARY}
+                  onClick={onClearSelection}
+                  style={{ fontSize: '0.85rem' }}
+                >
+                  Clear
+                </Button>
+                
+                <Button
+                  $variant={BUTTON_VARIANTS.SUCCESS}
+                  onClick={onBulkComplete}
+                  style={{ fontSize: '0.85rem' }}
+                >
+                  Complete ({selectedCount})
+                </Button>
+                
+                <Button
+                  $variant={BUTTON_VARIANTS.DANGER}
+                  onClick={onBulkDelete}
+                  style={{ fontSize: '0.85rem' }}
+                >
+                  Delete ({selectedCount})
+                </Button>
+              </>
+            )}
+          </>
+        )}
+      </div>
+    </Card>
+  );
+};
+
 // Subtask View
 interface SubtaskViewProps {
   subtask: Subtask;
@@ -296,6 +380,9 @@ interface TaskViewProps {
   onAddSubtask?: (taskId: string, title: string) => void;
   onToggleSubtask?: (taskId: string, subtaskId: string) => void;
   onDeleteSubtask?: (taskId: string, subtaskId: string) => void;
+  isSelectionMode?: boolean;
+  isSelected?: boolean;
+  onToggleSelection?: (id: string) => void;
 }
 
 export const TaskView: React.FC<TaskViewProps> = ({ 
@@ -304,9 +391,25 @@ export const TaskView: React.FC<TaskViewProps> = ({
   onDelete, 
   onAddSubtask, 
   onToggleSubtask, 
-  onDeleteSubtask 
+  onDeleteSubtask,
+  isSelectionMode = false,
+  isSelected = false,
+  onToggleSelection 
 }) => (
-  <TaskItem $completed={task.completed}>
+  <TaskItem $completed={task.completed} style={{ 
+    backgroundColor: isSelected ? 'var(--selected-background, rgba(74, 144, 226, 0.1))' : undefined,
+    border: isSelected ? '2px solid var(--primary-color, #4a90e2)' : undefined
+  }}>
+    {isSelectionMode && (
+      <div style={{ padding: '0.5rem' }}>
+        <input
+          type="checkbox"
+          checked={isSelected}
+          onChange={() => onToggleSelection?.(task.id)}
+          style={{ transform: 'scale(1.2)' }}
+        />
+      </div>
+    )}
     <TaskContent>
       <TaskTitle $completed={task.completed}>
         {task.title}
@@ -400,6 +503,9 @@ interface TaskListViewProps {
   onAddSubtask?: (taskId: string, title: string) => void;
   onToggleSubtask?: (taskId: string, subtaskId: string) => void;
   onDeleteSubtask?: (taskId: string, subtaskId: string) => void;
+  isSelectionMode?: boolean;
+  selectedTaskIds?: Set<string>;
+  onToggleSelection?: (id: string) => void;
 }
 
 export const TaskListView: React.FC<TaskListViewProps> = ({
@@ -410,22 +516,164 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
   onAddSubtask,
   onToggleSubtask,
   onDeleteSubtask,
-}) => (
-  <Card>
-    <EmptyStateView 
-      hasAnyTasks={hasAnyTasks}
-      hasFilteredTasks={tasks.length > 0}
-    />
-    {tasks.map(task => (
-      <TaskView
-        key={task.id}
-        task={task}
-        onToggle={onToggleTask}
-        onDelete={onDeleteTask}
-        onAddSubtask={onAddSubtask}
-        onToggleSubtask={onToggleSubtask}
-        onDeleteSubtask={onDeleteSubtask}
-      />
-    ))}
-  </Card>
-);
+  isSelectionMode = false,
+  selectedTaskIds = new Set(),
+  onToggleSelection,
+}) => {
+  if (!hasAnyTasks || tasks.length === 0) {
+    return (
+      <Card>
+        <EmptyStateView 
+          hasAnyTasks={hasAnyTasks}
+          hasFilteredTasks={tasks.length > 0}
+        />
+      </Card>
+    );
+  }
+
+  // For now, render without drag and drop - we'll add it shortly
+  return (
+    <Card>
+      {tasks.map(task => (
+        <TaskView
+          key={task.id}
+          task={task}
+          onToggle={onToggleTask}
+          onDelete={onDeleteTask}
+          onAddSubtask={onAddSubtask}
+          onToggleSubtask={onToggleSubtask}
+          onDeleteSubtask={onDeleteSubtask}
+          isSelectionMode={isSelectionMode}
+          isSelected={selectedTaskIds.has(task.id)}
+          onToggleSelection={onToggleSelection}
+        />
+      ))}
+    </Card>
+  );
+};
+
+// Draggable Task List View with HTML5 Drag & Drop support
+interface DraggableTaskListViewProps extends TaskListViewProps {
+  onReorderTasks: (startIndex: number, endIndex: number) => void;
+}
+
+export const DraggableTaskListView: React.FC<DraggableTaskListViewProps> = ({
+  tasks,
+  hasAnyTasks,
+  onToggleTask,
+  onDeleteTask,
+  onAddSubtask,
+  onToggleSubtask,
+  onDeleteSubtask,
+  isSelectionMode = false,
+  selectedTaskIds = new Set(),
+  onToggleSelection,
+  onReorderTasks,
+}) => {
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  if (!hasAnyTasks || tasks.length === 0) {
+    return (
+      <Card>
+        <EmptyStateView 
+          hasAnyTasks={hasAnyTasks}
+          hasFilteredTasks={tasks.length > 0}
+        />
+      </Card>
+    );
+  }
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    if (isSelectionMode) {
+      e.preventDefault();
+      return;
+    }
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.currentTarget.outerHTML);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    if (isSelectionMode) return;
+    e.preventDefault();
+    setDragOverIndex(index);
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
+    if (isSelectionMode) return;
+    e.preventDefault();
+    
+    if (draggedIndex !== null && draggedIndex !== dropIndex) {
+      onReorderTasks(draggedIndex, dropIndex);
+    }
+    
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  return (
+    <Card>
+      {tasks.map((task, index) => (
+        <div
+          key={task.id}
+          draggable={!isSelectionMode}
+          onDragStart={(e) => handleDragStart(e, index)}
+          onDragOver={(e) => handleDragOver(e, index)}
+          onDragEnd={handleDragEnd}
+          onDrop={(e) => handleDrop(e, index)}
+          style={{
+            opacity: draggedIndex === index ? 0.5 : 1,
+            backgroundColor: dragOverIndex === index ? 'rgba(74, 144, 226, 0.1)' : undefined,
+            borderTop: dragOverIndex === index && draggedIndex !== index ? '2px solid #4a90e2' : undefined,
+            transition: 'all 0.2s ease',
+            cursor: isSelectionMode ? 'default' : 'grab',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'stretch',
+            }}
+          >
+            {!isSelectionMode && (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  padding: '0 0.5rem',
+                  backgroundColor: 'var(--card-background, #fff)',
+                  color: 'var(--text-secondary, #666)',
+                  borderRight: '1px solid var(--border-color, #e0e0e0)',
+                  fontSize: '1.2rem',
+                  userSelect: 'none',
+                }}
+              >
+                ⋮⋮
+              </div>
+            )}
+            <div style={{ flex: 1 }}>
+              <TaskView
+                task={task}
+                onToggle={onToggleTask}
+                onDelete={onDeleteTask}
+                onAddSubtask={onAddSubtask}
+                onToggleSubtask={onToggleSubtask}
+                onDeleteSubtask={onDeleteSubtask}
+                isSelectionMode={isSelectionMode}
+                isSelected={selectedTaskIds.has(task.id)}
+                onToggleSelection={onToggleSelection}
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+    </Card>
+  );
+};
