@@ -81,34 +81,34 @@ npm run preview
 
 - **Frontend**: React 19 + TypeScript
 - **Build Tool**: Vite
-- **Styling**: CSS Modules / Tailwind CSS (TBD)
-- **State Management**: React Context + useReducer
+- **Styling**: Styled-Components with glassmorphism design
+- **State Management**: React useState hooks (simplified)
 - **Persistence**: LocalStorage with error handling
-- **Testing**: Vitest + React Testing Library (TBD)
+- **Icons**: Custom SVG logo
 
 ## 🎨 Design Principles
 
-- **Simplicity First**: Clean, uncluttered interface
+- **Simplicity First**: Clean, uncluttered interface with glassmorphism
 - **Mobile-First**: Touch-friendly, responsive design
-- **Accessibility**: Keyboard navigation, screen reader support
+- **Visual Appeal**: Gradient backgrounds with floating animations
 - **Performance**: Fast interactions, smooth animations
-- **Feedback**: Clear visual feedback for all actions
+- **Feedback**: Clear visual feedback with hover effects
 
 ## 🔧 Development
 
 This project uses:
 - React 19 with TypeScript
 - Vite for fast development and building
+- Styled-Components for styling
 - ESLint for code quality
 - Modern JavaScript/TypeScript features
 
-### Project Structure
+### Simplified Project Structure
 ```
 src/
-├── components/        # Reusable UI components
-├── hooks/            # Custom React hooks
-├── types/            # TypeScript type definitions
-├── utils/            # Utility functions
-├── contexts/         # React contexts
-└── styles/           # Global styles and themes
+├── App.tsx           # Main application component
+├── main.tsx          # React entry point
+├── index.css         # Global CSS reset
+└── assets/
+    └── logo.svg      # Custom logo
 ```

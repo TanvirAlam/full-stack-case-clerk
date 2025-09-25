@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
-import Logo from './components/ui/Logo'
+import styled, { keyframes, css } from 'styled-components'
+import logoSvg from './assets/logo.svg'
 
 // Types
 interface Task {
@@ -11,6 +11,50 @@ interface Task {
   completed: boolean;
   createdAt: Date;
 }
+
+// Simple Logo Component
+const pulse = keyframes`
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+`;
+
+const rotate = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+`;
+
+const LogoContainer = styled.div<{ $size: string; $animated: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  
+  ${({ $size }) => {
+    switch ($size) {
+      case 'lg': return css`width: 48px; height: 48px;`;
+      case 'xl': return css`width: 64px; height: 64px;`;
+      default: return css`width: 32px; height: 32px;`;
+    }
+  }}
+  
+  ${({ $animated }) => $animated && css`
+    animation: ${pulse} 2s ease-in-out infinite;
+    cursor: pointer;
+    &:hover { animation: ${rotate} 0.5s ease-in-out; }
+  `}
+`;
+
+const LogoImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(102, 126, 234, 0.2));
+`;
+
+const Logo: React.FC<{ size?: string; animated?: boolean }> = ({ size = 'md', animated = false }) => (
+  <LogoContainer $size={size} $animated={animated}>
+    <LogoImage src={logoSvg} alt="A" />
+  </LogoContainer>
+);
 
 // Styled Components
 const AppContainer = styled.div`
