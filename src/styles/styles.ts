@@ -166,6 +166,11 @@ export const Input = styled.input`
     transform: translateY(-1px);
     box-shadow: 0 4px 20px rgba(31, 38, 135, 0.3);
   }
+  
+  &:focus-visible {
+    outline: 2px solid #4299e1;
+    outline-offset: 2px;
+  }
 `;
 
 export const Select = styled.select`
@@ -187,6 +192,11 @@ export const Select = styled.select`
     transform: translateY(-1px);
     box-shadow: 0 4px 20px rgba(31, 38, 135, 0.3);
   }
+  
+  &:focus-visible {
+    outline: 2px solid #4299e1;
+    outline-offset: 2px;
+  }
 
   option {
     background: #ffffff;
@@ -195,7 +205,7 @@ export const Select = styled.select`
   }
 `;
 
-export const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'success' | 'danger' }>`
+export const Button = styled.button<{ $variant?: 'primary' | 'secondary' | 'success' | 'danger' }>`
   padding: 0.875rem 1.5rem;
   border: none;
   border-radius: 12px;
@@ -234,9 +244,14 @@ export const Button = styled.button<{ variant?: 'primary' | 'secondary' | 'succe
   &:active {
     transform: translateY(0);
   }
+  
+  &:focus-visible {
+    outline: 2px solid #4299e1;
+    outline-offset: 2px;
+  }
 
-  ${({ variant = 'primary' }) => {
-    switch (variant) {
+  ${({ $variant = 'primary' }) => {
+    switch ($variant) {
       case 'secondary':
         return `
           background: rgba(255, 255, 255, 0.2);
@@ -535,5 +550,148 @@ export const SubtaskAddButton = styled(SubtaskButton)`
   
   &:hover {
     background: linear-gradient(135deg, #38a169, #2f855a);
+  }
+`;
+
+// Toast Components
+export const ToastContainer = styled.div`
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  
+  @media (max-width: 480px) {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: none;
+  }
+`;
+
+export const ToastItem = styled.div<{ $type: 'success' | 'error' | 'info' | 'warning' }>`
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+  border-left: 4px solid ${({ $type }) => {
+    switch ($type) {
+      case 'success': return '#48bb78';
+      case 'error': return '#f56565';
+      case 'warning': return '#ed8936';
+      case 'info': return '#4299e1';
+      default: return '#4299e1';
+    }
+  }};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  animation: slideInRight 0.3s ease-out;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translateX(-4px);
+    box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+`;
+
+export const ToastContent = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const ToastIcon = styled.div<{ $type: 'success' | 'error' | 'info' | 'warning' }>`
+  font-size: 18px;
+  
+  &::before {
+    content: '${({ $type }) => {
+      switch ($type) {
+        case 'success': return '\u2713';
+        case 'error': return '\u2717';
+        case 'warning': return '\u26A0';
+        case 'info': return '\u2139';
+        default: return '\u2139';
+      }
+    }}';
+    color: ${({ $type }) => {
+      switch ($type) {
+        case 'success': return '#48bb78';
+        case 'error': return '#f56565';
+        case 'warning': return '#ed8936';
+        case 'info': return '#4299e1';
+        default: return '#4299e1';
+      }
+    }};
+  }
+`;
+
+export const ToastMessage = styled.div`
+  color: #2d3748;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+`;
+
+export const ToastActions = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+export const ToastActionButton = styled.button`
+  background: none;
+  border: none;
+  color: #4299e1;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(66, 153, 225, 0.1);
+    color: #3182ce;
+  }
+`;
+
+export const ToastCloseButton = styled.button`
+  background: none;
+  border: none;
+  color: #a0aec0;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background: rgba(160, 174, 192, 0.2);
+    color: #718096;
+  }
+  
+  &::before {
+    content: '\u00D7';
   }
 `;

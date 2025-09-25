@@ -154,21 +154,21 @@ export const FiltersView: React.FC<FiltersViewProps> = ({
       
       <FilterButtons>
         <Button
-          variant={filter === TASK_FILTERS.ALL ? BUTTON_VARIANTS.PRIMARY : BUTTON_VARIANTS.SECONDARY}
+          $variant={filter === TASK_FILTERS.ALL ? BUTTON_VARIANTS.PRIMARY : BUTTON_VARIANTS.SECONDARY}
           onClick={() => onFilterChange(TASK_FILTERS.ALL)}
         >
           {FILTER_LABELS.ALL} ({taskStats.total})
         </Button>
         
         <Button
-          variant={filter === TASK_FILTERS.ACTIVE ? BUTTON_VARIANTS.PRIMARY : BUTTON_VARIANTS.SECONDARY}
+          $variant={filter === TASK_FILTERS.ACTIVE ? BUTTON_VARIANTS.PRIMARY : BUTTON_VARIANTS.SECONDARY}
           onClick={() => onFilterChange(TASK_FILTERS.ACTIVE)}
         >
           {FILTER_LABELS.ACTIVE} ({taskStats.active})
         </Button>
         
         <Button
-          variant={filter === TASK_FILTERS.DONE ? BUTTON_VARIANTS.PRIMARY : BUTTON_VARIANTS.SECONDARY}
+          $variant={filter === TASK_FILTERS.DONE ? BUTTON_VARIANTS.PRIMARY : BUTTON_VARIANTS.SECONDARY}
           onClick={() => onFilterChange(TASK_FILTERS.DONE)}
         >
           {FILTER_LABELS.DONE} ({taskStats.completed})
@@ -236,7 +236,10 @@ export const SubtaskListView: React.FC<SubtaskListViewProps> = ({
     }
   };
 
-  if (subtasks.length === 0 && !isExpanded) {
+  // Handle undefined or empty subtasks array
+  const subtasksArray = subtasks || [];
+
+  if (subtasksArray.length === 0 && !isExpanded) {
     return (
       <SubtaskSection>
         <SubtaskToggle onClick={() => setIsExpanded(true)}>
@@ -250,7 +253,7 @@ export const SubtaskListView: React.FC<SubtaskListViewProps> = ({
     <SubtaskSection>
       <SubtaskToggle onClick={() => setIsExpanded(!isExpanded)}>
         {isExpanded ? BUTTON_LABELS.HIDE_SUBTASKS : BUTTON_LABELS.SHOW_SUBTASKS}
-        {subtasks.length > 0 && ` ${subtasks.length} subtask${subtasks.length !== 1 ? 's' : ''}`}
+        {subtasksArray.length > 0 && ` ${subtasksArray.length} subtask${subtasksArray.length !== 1 ? 's' : ''}`}
       </SubtaskToggle>
       
       {isExpanded && (
@@ -267,9 +270,9 @@ export const SubtaskListView: React.FC<SubtaskListViewProps> = ({
             </SubtaskAddButton>
           </SubtaskForm>
           
-          {subtasks.length > 0 && (
+          {subtasksArray.length > 0 && (
             <SubtaskList>
-              {subtasks.map(subtask => (
+              {subtasksArray.map(subtask => (
                 <SubtaskView
                   key={subtask.id}
                   subtask={subtask}
@@ -338,13 +341,13 @@ export const TaskView: React.FC<TaskViewProps> = ({
     
     <TaskActions>
       <Button
-        variant={task.completed ? BUTTON_VARIANTS.SECONDARY : BUTTON_VARIANTS.SUCCESS}
+        $variant={task.completed ? BUTTON_VARIANTS.SECONDARY : BUTTON_VARIANTS.SUCCESS}
         onClick={() => onToggle(task.id)}
       >
         {task.completed ? BUTTON_LABELS.UNDO : BUTTON_LABELS.COMPLETE}
       </Button>
       <Button
-        variant={BUTTON_VARIANTS.DANGER}
+        $variant={BUTTON_VARIANTS.DANGER}
         onClick={() => onDelete(task.id)}
       >
         {BUTTON_LABELS.DELETE}
