@@ -119,6 +119,37 @@ This ensures users see their most urgent, actionable items at the top.
 
 **React 19 + TypeScript**: Latest React features with compile-time type safety, improving developer experience and code reliability.
 
+### Package Choices & Rationale
+
+**Core Dependencies (Production)**:
+- **`react@19.1.1`** - Latest React with improved performance and new features
+- **`react-dom@19.1.1`** - DOM renderer matching React version for consistency
+- **`styled-components@6.1.19`** - CSS-in-JS with TypeScript support, component-scoped styling
+
+**Development & Build Tools**:
+- **`vite@7.1.7`** - Ultra-fast dev server and build tool, superior to Create React App
+- **`typescript@5.8.3`** - Latest TypeScript for enhanced type safety and developer experience
+- **`@vitejs/plugin-react@5.0.3`** - Official React plugin for Vite with fast refresh
+
+**Testing Infrastructure**:
+- **`jest@29.7.0`** - Robust testing framework with great React ecosystem support
+- **`@testing-library/react@16.3.0`** - Best practices testing utilities focusing on user behavior
+- **`@testing-library/jest-dom@6.8.0`** - Custom Jest matchers for DOM assertions
+- **`jest-environment-jsdom@29.7.0`** - DOM environment for testing React components
+- **`ts-jest@29.4.4`** - TypeScript preprocessor for Jest
+
+**Code Quality & Linting**:
+- **`eslint@9.36.0`** - Latest ESLint for code quality enforcement
+- **`typescript-eslint@8.44.0`** - TypeScript-specific linting rules
+- **`eslint-plugin-react-hooks@5.2.0`** - Enforces React Hooks rules and best practices
+
+**Why These Choices?**:
+- **Zero external UI libraries** - Keeps bundle size minimal and ensures full control over styling
+- **Latest versions** - Access to newest features, performance improvements, and security patches  
+- **TypeScript-first** - All packages chosen for excellent TypeScript integration
+- **Testing-focused** - Comprehensive testing stack for reliability and maintainability
+- **Performance-oriented** - Vite for fast development, minimal production bundle
+
 ## 🧪 Testing Strategy
 
 ### Test Coverage: 134 Tests Passing
