@@ -13,7 +13,6 @@ function App() {
   const model = useMemo(() => new TodoModel(), []);
   
   const {
-    // Form state
     title,
     setTitle,
     description,
@@ -21,18 +20,15 @@ function App() {
     priority,
     setPriority,
     
-    // Filter state
     filter,
     setFilter,
     searchQuery,
     setSearchQuery,
     
-    // Model state
     taskStats,
     isEmpty,
     filteredTasks,
-    
-    // Actions
+
     handleAddTask,
     handleToggleTask,
     handleDeleteTask,
@@ -42,13 +38,10 @@ function App() {
     <>
       <GlobalStyle />
       <Container>
-        {/* Header View - Static presentation */}
         <HeaderView 
           title="✨ Todo Master"
           subtitle="Organize your life, one task at a time"
         />
-        
-        {/* Task Form View - Form state management */}
         <TaskFormView
           title={title}
           description={description}
@@ -58,8 +51,6 @@ function App() {
           onPriorityChange={setPriority}
           onSubmit={handleAddTask}
         />
-        
-        {/* Filters View - Filter state and actions */}
         <FiltersView
           searchQuery={searchQuery}
           filter={filter}
@@ -68,8 +59,6 @@ function App() {
           onFilterChange={setFilter}
           hasAnyTasks={!isEmpty}
         />
-        
-        {/* Task List View - Data presentation and task actions */}
         <TaskListView
           tasks={filteredTasks}
           hasAnyTasks={!isEmpty}
