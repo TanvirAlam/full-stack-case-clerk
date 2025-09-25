@@ -1,73 +1,114 @@
-# React + TypeScript + Vite
+# Full Stack Todo App - Case Study
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> A simple, fast, and intuitive Todo application focused on usability and clean code.
 
-Currently, two official plugins are available:
+## 🎯 Project Objectives
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Build a Todo App** – simple, fast, and intuitive, without login.
 
-## React Compiler
+**Focus on Usability & Clean Code** – it should feel polished to use and easy to maintain.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Meet Functional Requirements (MVP)** – create, update, delete tasks, add subtasks, set priority, mark as done/restore, persist data locally.
 
-## Expanding the ESLint configuration
+**Ensure Good Usability** – clear empty state, inline feedback (toasts), undo for destructive actions, keyboard support, proper focus management, responsive layout.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+**Information Architecture & UI** – task list with priority indicators, filters (All, Active, Done), sorting, search, optional bulk actions and drag-and-drop.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Non-Functional Goals** – use any frontend tech stack (TypeScript is a plus), persistence in LocalStorage, proper build/run scripts.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+**Edge Cases Handling** – empty titles, long notes, no tasks or no search results, rapid input, persistence corruption.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**Documentation** – provide a concise README with run instructions, usage walkthrough, design choices.
+
+## 🚀 Quick Start
+
+### Prerequisites
+- Node.js (v18 or higher)
+- npm, yarn, or pnpm
+
+### Installation & Development
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Build & Preview
+```bash
+# Build for production
+npm run build
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+# Preview production build
+npm run preview
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 📋 Feature Checklist
+
+### Core Functionality (MVP)
+- [ ] Create, update, and delete tasks
+- [ ] Task fields: Title, Subtitle, Notes, Priority (Low/Med/High)
+- [ ] Mark tasks as done / restore to active
+- [ ] Subtasks with the same done behavior
+- [ ] LocalStorage persistence (survives refresh/reopen)
+- [ ] Runs locally without backend/login
+
+### Usability Requirements
+- [ ] Clear empty state with call-to-action
+- [ ] Inline feedback with toast notifications
+- [ ] Undo functionality for destructive actions
+- [ ] Keyboard support (Enter, Esc, Tab, Arrow keys)
+- [ ] Focus management with visible focus rings
+- [ ] Mobile-first responsive design
+
+### Information Architecture
+- [ ] Task list with visual priority indicators
+- [ ] Filters: All, Active, Done
+- [ ] Sorting by priority or latest updated
+- [ ] Search across title/subtitle/notes
+- [ ] Bulk actions (optional)
+- [ ] Drag-and-drop reordering
+
+### Edge Cases
+- [ ] Handle empty titles gracefully
+- [ ] Clamp long notes/titles in list view
+- [ ] Empty states for no tasks/search results
+- [ ] Prevent duplicates from rapid input
+- [ ] Graceful handling of corrupted persistence
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 19 + TypeScript
+- **Build Tool**: Vite
+- **Styling**: CSS Modules / Tailwind CSS (TBD)
+- **State Management**: React Context + useReducer
+- **Persistence**: LocalStorage with error handling
+- **Testing**: Vitest + React Testing Library (TBD)
+
+## 🎨 Design Principles
+
+- **Simplicity First**: Clean, uncluttered interface
+- **Mobile-First**: Touch-friendly, responsive design
+- **Accessibility**: Keyboard navigation, screen reader support
+- **Performance**: Fast interactions, smooth animations
+- **Feedback**: Clear visual feedback for all actions
+
+## 🔧 Development
+
+This project uses:
+- React 19 with TypeScript
+- Vite for fast development and building
+- ESLint for code quality
+- Modern JavaScript/TypeScript features
+
+### Project Structure
+```
+src/
+├── components/        # Reusable UI components
+├── hooks/            # Custom React hooks
+├── types/            # TypeScript type definitions
+├── utils/            # Utility functions
+├── contexts/         # React contexts
+└── styles/           # Global styles and themes
 ```
