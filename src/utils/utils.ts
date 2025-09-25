@@ -1,4 +1,4 @@
-import type { Task, TaskFilter, TaskStats } from './types';
+import type { Task, TaskFilter, TaskStats } from '../types/types';
 
 // ID Generation
 export const generateId = (): string => Math.random().toString(36).substr(2, 9);
