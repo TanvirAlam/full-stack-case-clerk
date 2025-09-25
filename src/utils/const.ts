@@ -28,6 +28,7 @@ export const PLACEHOLDERS = {
   TASK_SUBTITLE: 'Add a short summary (optional)',
   TASK_DESCRIPTION: 'Add a description (optional)',
   SEARCH_TASKS: 'Search tasks...',
+  SUBTASK_TITLE: 'Add a subtask...',
 } as const;
 
 // Button Labels
@@ -39,6 +40,9 @@ export const BUTTON_LABELS = {
   UNDO: '↶',
   COMPLETE: '✓',
   DELETE: '🗑',
+  ADD_SUBTASK: '+',
+  SHOW_SUBTASKS: '▼',
+  HIDE_SUBTASKS: '▲',
 } as const;
 
 // Filter Labels

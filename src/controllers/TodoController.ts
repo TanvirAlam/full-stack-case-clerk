@@ -98,6 +98,22 @@ export class TodoController {
     this.model.updateTask(id, updates);
   };
 
+  handleAddSubtask = (taskId: string, subtaskTitle: string) => {
+    this.model.addSubtask(taskId, subtaskTitle);
+  };
+
+  handleToggleSubtask = (taskId: string, subtaskId: string) => {
+    this.model.toggleSubtask(taskId, subtaskId);
+  };
+
+  handleDeleteSubtask = (taskId: string, subtaskId: string) => {
+    this.model.deleteSubtask(taskId, subtaskId);
+  };
+
+  handleUpdateSubtask = (taskId: string, subtaskId: string, title: string) => {
+    this.model.updateSubtask(taskId, subtaskId, title);
+  };
+
   // Computed values
   getFilteredTasks(filter: TaskFilter, searchQuery: string) {
     return this.model.getFilteredTasks(filter, searchQuery);
@@ -130,5 +146,11 @@ export const useTodoController = (model: TodoModel) => {
     handleToggleTask: controller.handleToggleTask,
     handleDeleteTask: controller.handleDeleteTask,
     handleUpdateTask: controller.handleUpdateTask,
+    
+    // Subtask Actions
+    handleAddSubtask: controller.handleAddSubtask,
+    handleToggleSubtask: controller.handleToggleSubtask,
+    handleDeleteSubtask: controller.handleDeleteSubtask,
+    handleUpdateSubtask: controller.handleUpdateSubtask,
   };
 };

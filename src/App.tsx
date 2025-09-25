@@ -36,6 +36,11 @@ function App() {
     handleToggleTask,
     handleDeleteTask,
     handleUpdateTask,
+    
+    handleAddSubtask,
+    handleToggleSubtask,
+    handleDeleteSubtask,
+    handleUpdateSubtask,
   } = useTodoController(model);
 
   return (
@@ -70,6 +75,9 @@ function App() {
           hasAnyTasks={!isEmpty}
           onToggleTask={handleToggleTask}
           onDeleteTask={handleDeleteTask}
+          onAddSubtask={handleAddSubtask}
+          onToggleSubtask={handleToggleSubtask}
+          onDeleteSubtask={handleDeleteSubtask}
         />
       </Container>
     </>

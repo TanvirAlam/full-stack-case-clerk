@@ -1,4 +1,5 @@
-import type { Task, TaskFilter, TaskStats } from '../types/types';
+import React, { useState } from 'react';
+import type { Task, TaskFilter, TaskStats, Subtask } from '../types/types';
 import { getPriorityColor } from '../utils/utils';
 import {
   PLACEHOLDERS,
@@ -34,6 +35,17 @@ import {
   EmptyIcon,
   EmptyTitle,
   EmptyDescription,
+  SubtaskSection,
+  SubtaskToggle,
+  SubtaskList,
+  SubtaskItem,
+  SubtaskContent,
+  SubtaskTitle,
+  SubtaskActions,
+  SubtaskForm,
+  SubtaskInput,
+  SubtaskButton,
+  SubtaskAddButton,
 } from '../styles/styles';
 
 // Header View
@@ -166,14 +178,131 @@ export const FiltersView: React.FC<FiltersViewProps> = ({
   );
 };
 
+// Subtask View
+interface SubtaskViewProps {
+  subtask: Subtask;
+  onToggle: (subtaskId: string) => void;
+  onDelete: (subtaskId: string) => void;
+}
+
+export const SubtaskView: React.FC<SubtaskViewProps> = ({ subtask, onToggle, onDelete }) => (
+  <SubtaskItem $completed={subtask.completed}>
+    <SubtaskContent>
+      <SubtaskTitle $completed={subtask.completed}>
+        {subtask.title}
+      </SubtaskTitle>
+    </SubtaskContent>
+    <SubtaskActions>
+      <SubtaskButton
+        onClick={() => onToggle(subtask.id)}
+        title={subtask.completed ? 'Mark as incomplete' : 'Mark as complete'}
+      >
+        {subtask.completed ? BUTTON_LABELS.UNDO : BUTTON_LABELS.COMPLETE}
+      </SubtaskButton>
+      <SubtaskButton
+        onClick={() => onDelete(subtask.id)}
+        title="Delete subtask"
+      >
+        {BUTTON_LABELS.DELETE}
+      </SubtaskButton>
+    </SubtaskActions>
+  </SubtaskItem>
+);
+
+// Subtask List View
+interface SubtaskListViewProps {
+  taskId: string;
+  subtasks: Subtask[];
+  onAddSubtask: (taskId: string, title: string) => void;
+  onToggleSubtask: (taskId: string, subtaskId: string) => void;
+  onDeleteSubtask: (taskId: string, subtaskId: string) => void;
+}
+
+export const SubtaskListView: React.FC<SubtaskListViewProps> = ({
+  taskId,
+  subtasks,
+  onAddSubtask,
+  onToggleSubtask,
+  onDeleteSubtask,
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newSubtaskTitle.trim()) {
+      onAddSubtask(taskId, newSubtaskTitle.trim());
+      setNewSubtaskTitle('');
+    }
+  };
+
+  if (subtasks.length === 0 && !isExpanded) {
+    return (
+      <SubtaskSection>
+        <SubtaskToggle onClick={() => setIsExpanded(true)}>
+          + Add subtask
+        </SubtaskToggle>
+      </SubtaskSection>
+    );
+  }
+
+  return (
+    <SubtaskSection>
+      <SubtaskToggle onClick={() => setIsExpanded(!isExpanded)}>
+        {isExpanded ? BUTTON_LABELS.HIDE_SUBTASKS : BUTTON_LABELS.SHOW_SUBTASKS}
+        {subtasks.length > 0 && ` ${subtasks.length} subtask${subtasks.length !== 1 ? 's' : ''}`}
+      </SubtaskToggle>
+      
+      {isExpanded && (
+        <>
+          <SubtaskForm onSubmit={handleSubmit}>
+            <SubtaskInput
+              type="text"
+              placeholder={PLACEHOLDERS.SUBTASK_TITLE}
+              value={newSubtaskTitle}
+              onChange={(e) => setNewSubtaskTitle(e.target.value)}
+            />
+            <SubtaskAddButton type="submit">
+              {BUTTON_LABELS.ADD_SUBTASK}
+            </SubtaskAddButton>
+          </SubtaskForm>
+          
+          {subtasks.length > 0 && (
+            <SubtaskList>
+              {subtasks.map(subtask => (
+                <SubtaskView
+                  key={subtask.id}
+                  subtask={subtask}
+                  onToggle={(subtaskId) => onToggleSubtask(taskId, subtaskId)}
+                  onDelete={(subtaskId) => onDeleteSubtask(taskId, subtaskId)}
+                />
+              ))}
+            </SubtaskList>
+          )}
+        </>
+      )}
+    </SubtaskSection>
+  );
+};
+
 // Single Task View
 interface TaskViewProps {
   task: Task;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  onAddSubtask?: (taskId: string, title: string) => void;
+  onToggleSubtask?: (taskId: string, subtaskId: string) => void;
+  onDeleteSubtask?: (taskId: string, subtaskId: string) => void;
 }
 
-export const TaskView: React.FC<TaskViewProps> = ({ task, onToggle, onDelete }) => (
+export const TaskView: React.FC<TaskViewProps> = ({ 
+  task, 
+  onToggle, 
+  onDelete, 
+  onAddSubtask, 
+  onToggleSubtask, 
+  onDeleteSubtask 
+}) => (
   <TaskItem $completed={task.completed}>
     <TaskContent>
       <TaskTitle $completed={task.completed}>
@@ -195,6 +324,16 @@ export const TaskView: React.FC<TaskViewProps> = ({ task, onToggle, onDelete }) 
         </PriorityBadge>
         <span>{new Date(task.createdAt).toLocaleDateString()}</span>
       </TaskMeta>
+      
+      {onAddSubtask && onToggleSubtask && onDeleteSubtask && (
+        <SubtaskListView
+          taskId={task.id}
+          subtasks={task.subtasks}
+          onAddSubtask={onAddSubtask}
+          onToggleSubtask={onToggleSubtask}
+          onDeleteSubtask={onDeleteSubtask}
+        />
+      )}
     </TaskContent>
     
     <TaskActions>
@@ -255,6 +394,9 @@ interface TaskListViewProps {
   hasAnyTasks: boolean;
   onToggleTask: (id: string) => void;
   onDeleteTask: (id: string) => void;
+  onAddSubtask?: (taskId: string, title: string) => void;
+  onToggleSubtask?: (taskId: string, subtaskId: string) => void;
+  onDeleteSubtask?: (taskId: string, subtaskId: string) => void;
 }
 
 export const TaskListView: React.FC<TaskListViewProps> = ({
@@ -262,6 +404,9 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
   hasAnyTasks,
   onToggleTask,
   onDeleteTask,
+  onAddSubtask,
+  onToggleSubtask,
+  onDeleteSubtask,
 }) => (
   <Card>
     <EmptyStateView 
@@ -274,6 +419,9 @@ export const TaskListView: React.FC<TaskListViewProps> = ({
         task={task}
         onToggle={onToggleTask}
         onDelete={onDeleteTask}
+        onAddSubtask={onAddSubtask}
+        onToggleSubtask={onToggleSubtask}
+        onDeleteSubtask={onDeleteSubtask}
       />
     ))}
   </Card>

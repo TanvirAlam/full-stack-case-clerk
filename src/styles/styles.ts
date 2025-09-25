@@ -414,3 +414,126 @@ export const EmptyDescription = styled.p`
   margin: 0 auto;
   line-height: 1.6;
 `;
+
+// Subtask Components
+export const SubtaskSection = styled.div`
+  margin-top: 1rem;
+  padding-left: 1rem;
+  border-left: 2px solid rgba(255, 255, 255, 0.2);
+`;
+
+export const SubtaskToggle = styled.button`
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0;
+  margin-bottom: 0.75rem;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: rgba(255, 255, 255, 1);
+  }
+`;
+
+export const SubtaskList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
+export const SubtaskItem = styled.div<{ $completed: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: ${({ $completed }) => $completed ? 0.6 : 1};
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+`;
+
+export const SubtaskContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+`;
+
+export const SubtaskTitle = styled.span<{ $completed: boolean }>`
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  text-decoration: ${({ $completed }) => $completed ? 'line-through' : 'none'};
+  word-break: break-word;
+`;
+
+export const SubtaskActions = styled.div`
+  display: flex;
+  gap: 0.25rem;
+`;
+
+export const SubtaskForm = styled.form`
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+`;
+
+export const SubtaskInput = styled.input`
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: #2d3748;
+  transition: all 0.2s ease;
+  
+  &::placeholder {
+    color: rgba(45, 55, 72, 0.5);
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+  }
+`;
+
+export const SubtaskButton = styled.button`
+  padding: 0.5rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.7rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  
+  &:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+`;
+
+export const SubtaskAddButton = styled(SubtaskButton)`
+  background: linear-gradient(135deg, #48bb78, #38a169);
+  
+  &:hover {
+    background: linear-gradient(135deg, #38a169, #2f855a);
+  }
+`;
