@@ -223,7 +223,7 @@ src/
 ## ✅ Mini Checklist Before Submitting
 
 ● **Runs with a single command** - 
-✅ `npm i && npm run dev` (README confirms)
+✅ `npm i && npm run dev` 
 
 ● **Empty state and no‑results state designed** - 
 ✅ "All caught up!" for no tasks, "No tasks found" for search results with helpful messaging
