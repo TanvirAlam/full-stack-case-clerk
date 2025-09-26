@@ -2,6 +2,18 @@
 
 > A feature-complete, accessible, and beautifully designed task management application with drag-and-drop, bulk actions, and comprehensive keyboard support.
 
+## 📱 Screenshots
+
+<div align="center">
+
+### Desktop View
+![Desktop Screenshot](./public/deskstop-screenshot.png)
+
+### Mobile View
+![Mobile Screenshot](./public/mobil-screenshot.png)
+
+</div>
+
 ## 🎯 **Requirements Status: 100% Complete**
 
 - **✅ Functional Requirements (MVP)** - 100% Complete (6/6)
